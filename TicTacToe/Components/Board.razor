@@ -4,27 +4,42 @@
 <div>
     <div class="status">Next player: @GameStateProvider.symbol @GameStateProvider.turn</div>
     <div class="board-row">
-        <Square value="0" />
-        <Square value="1" />
-        <Square value="2" />
+        <Square value="0" 
+                OnClick="squareClick"/>
+        <Square value="1" 
+                OnClick="squareClick"/>
+        <Square value="2" 
+                OnClick="squareClick"/>
     </div>
     <div class="board-row">
-        <Square value="3" />
-        <Square value="4" />
-        <Square value="5" />
+        <Square value="3"
+                OnClick="squareClick"/>
+        <Square value="4"
+                OnClick="squareClick"/>
+        <Square value="5"
+                OnClick="squareClick"/>
     </div>
     <div class="board-row">
-        <Square value="6" />
-        <Square value="7" />
-        <Square value="8" />
+        <Square value="6"
+                OnClick="squareClick" />                        .
+        <Square value="7"
+                OnClick="squareClick"/>                         .
+        <Square value="8"
+                OnClick="squareClick"/>
     </div>
 </div>
 
-
 @code {
+
     protected override void OnInitialized()
     {
         GameStateProvider.OnChange += StateHasChanged;
+    }
+
+    void squareClick(int i)
+    {
+        GameStateProvider.squares[i] = GameStateProvider.symbol;
+        GameStateProvider.nextTurn();
     }
 
     public void Dispose()

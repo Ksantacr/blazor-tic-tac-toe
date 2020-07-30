@@ -1,14 +1,10 @@
 ﻿@inject GameState GameStateProvider
 
-<button class="square" @onclick="squareClick">
-    @value
+<button class="square" @onclick="@(() => OnClick.InvokeAsync(value))">
+    @GameStateProvider.squares[value]
 </button>
 
 @code {
     [Parameter] public int value { get; set; }
-    void squareClick()
-    {
-        GameStateProvider.nextTurn();
-        Console.WriteLine("click" + GameStateProvider.symbol);
-    }
+    [Parameter] public EventCallback<int> OnClick { get; set; }
 }
