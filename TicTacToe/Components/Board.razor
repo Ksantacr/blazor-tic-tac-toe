@@ -1,5 +1,8 @@
-﻿<div>
-    <div class="status">@status</div>
+﻿@inject GameState GameStateProvider
+@implements IDisposable
+
+<div>
+    <div class="status">Next player: @GameStateProvider.symbol @GameStateProvider.turn</div>
     <div class="board-row">
         <Square value="0" />
         <Square value="1" />
@@ -19,5 +22,13 @@
 
 
 @code {
-    const string status = "Next player: X";
+    protected override void OnInitialized()
+    {
+        GameStateProvider.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        GameStateProvider.OnChange -= StateHasChanged;
+    }
 }
