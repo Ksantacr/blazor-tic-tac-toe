@@ -1,45 +1,63 @@
 ﻿@inject GameState GameStateProvider
+@inject IJSRuntime IJSRuntime
+@inject GameService GameService
 @implements IDisposable
 
 <div>
-    <div class="status">Next player: @GameStateProvider.symbol @GameStateProvider.turn</div>
+    <div class="status">
+        @status
+    </div>
     <div class="board-row">
-        <Square value="0" 
-                OnClick="squareClick"/>
-        <Square value="1" 
-                OnClick="squareClick"/>
-        <Square value="2" 
-                OnClick="squareClick"/>
+        <Square value="0"
+                OnClick="handleClick" />
+        <Square value="1"
+                OnClick="handleClick" />
+        <Square value="2"
+                OnClick="handleClick" />
     </div>
     <div class="board-row">
         <Square value="3"
-                OnClick="squareClick"/>
+                OnClick="handleClick" />
         <Square value="4"
-                OnClick="squareClick"/>
+                OnClick="handleClick" />
         <Square value="5"
-                OnClick="squareClick"/>
+                OnClick="handleClick" />
     </div>
     <div class="board-row">
         <Square value="6"
-                OnClick="squareClick" />                        .
+                OnClick="handleClick" />                        .
         <Square value="7"
-                OnClick="squareClick"/>                         .
+                OnClick="handleClick" />                         .
         <Square value="8"
-                OnClick="squareClick"/>
+                OnClick="handleClick" />
     </div>
 </div>
 
 @code {
-
+    public string status { get; set; }
     protected override void OnInitialized()
     {
+        status = "Next player:" + (GameStateProvider.xIsNext ? "X" : "O");
         GameStateProvider.OnChange += StateHasChanged;
     }
 
-    void squareClick(int i)
+    void handleClick(int i)
     {
-        GameStateProvider.squares[i] = GameStateProvider.symbol;
-        GameStateProvider.nextTurn();
+        GameStateProvider.squares[i] = GameStateProvider.xIsNext ? "X" : "O";
+        GameStateProvider.xIsNext = !GameStateProvider.xIsNext;
+
+        string winner = GameService.calculateWinner(GameStateProvider.squares);
+
+        if (!string.IsNullOrEmpty(winner))
+        {
+            status = "Winner: " + winner;
+            Console.WriteLine("Winner: " + winner);
+        }
+        else
+        {
+            status = "Next player:" + (GameStateProvider.xIsNext ? "X" : "O");
+        }
+        GameStateProvider.notifyChanges();
     }
 
     public void Dispose()

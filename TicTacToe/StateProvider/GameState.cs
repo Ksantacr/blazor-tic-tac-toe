@@ -4,19 +4,19 @@ namespace TicTacToe.StateProvider
 {
     public class GameState
     {
-        public int turn { get; set; }
         public string[] squares = new string[9];
-        public string symbol { get; set; }
+        public bool xIsNext { get; set; }
         public event Action OnChange;
         public GameState()
         {
-            symbol = "X";
-            turn = 1;
+            xIsNext = true;
+            for (int i = 0; i < 9; i++)
+            {
+                squares[i] = string.Empty;
+            }
         }
-        public void nextTurn()
+        public void notifyChanges()
         {
-            turn++;
-            symbol = (turn % 2 == 0 ? "O" : "X");
             NotifyStateChanged();
         }
         private void NotifyStateChanged() => OnChange?.Invoke();
