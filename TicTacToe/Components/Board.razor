@@ -4,9 +4,6 @@
 @implements IDisposable
 
 <div>
-    <div class="status">
-        @status
-    </div>
     <div class="board-row">
         <Square value="0"
                 OnClick="handleClick" />
@@ -34,35 +31,23 @@
 </div>
 
 @code {
-    public string status { get; set; }
+
+    [Parameter] public EventCallback<int> handleBoardClick { get; set; }
     protected override void OnInitialized()
     {
-        status = "Next player:" + (GameStateProvider.xIsNext ? "X" : "O");
         GameStateProvider.OnChange += StateHasChanged;
     }
 
-    void handleClick(int i)
+    async Task handleClick(int i)
     {
-        if (!string.IsNullOrEmpty(GameService.calculateWinner(GameStateProvider.squares)))
+        var current = GameStateProvider.history[GameStateProvider.history.Count() - 1];
+
+        if (!string.IsNullOrEmpty(GameService.calculateWinner(current)))
         {
             return;
         }
 
-        GameStateProvider.squares[i] = GameStateProvider.xIsNext ? "X" : "O";
-        GameStateProvider.xIsNext = !GameStateProvider.xIsNext;
-
-        string winner = GameService.calculateWinner(GameStateProvider.squares);
-
-        if (!string.IsNullOrEmpty(winner))
-        {
-            status = "Winner: " + winner;
-            Console.WriteLine("Winner: " + winner);
-        }
-        else
-        {
-            status = "Next player:" + (GameStateProvider.xIsNext ? "X" : "O");
-        }
-        GameStateProvider.notifyChanges();
+        await handleBoardClick.InvokeAsync(i);
     }
 
     public void Dispose()

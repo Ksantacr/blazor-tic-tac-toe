@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TicTacToe.StateProvider
 {
     public class GameState
     {
-        public string[] squares = new string[9];
+        public List<string[]> history;
         public bool xIsNext { get; set; }
         public event Action OnChange;
         public GameState()
         {
+            history = new List<string[]>();
+            string[] array = new string[9];
+            history.Add(array);
             xIsNext = true;
-            for (int i = 0; i < 9; i++)
-            {
-                squares[i] = string.Empty;
-            }
         }
         public void notifyChanges()
         {

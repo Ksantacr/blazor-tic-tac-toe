@@ -1,7 +1,7 @@
 ﻿@inject GameState GameStateProvider
 
 <button class="square" @onclick="@(() => OnClick.InvokeAsync(value))">
-    @GameStateProvider.squares[value]
+    @GameStateProvider.history[GameStateProvider.history.Count() - 1][value]
 </button>
 
 @code {

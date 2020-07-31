@@ -1,11 +1,51 @@
 ﻿@page "/game"
 
+@inject GameState GameStateProvider
+@inject GameService GameService
+
 <div class="game">
     <div class="game-board">
-        <Board />
+        <Board handleBoardClick="handleClick" />
     </div>
     <div class="game-info">
-        <div>status</div>
+        <div class="status">
+            @status
+        </div>
         @*<ol>TODO</ol>*@
     </div>
 </div>
+
+@code {
+    public string status { get; set; }
+    protected override void OnInitialized()
+    {
+        setStatusMessage();
+    }
+    void handleClick(int i)
+    {
+        var current = GameStateProvider.history[GameStateProvider.history.Count() - 1];
+        current[i] = GameStateProvider.xIsNext ? "X" : "O";
+        GameStateProvider.xIsNext = !GameStateProvider.xIsNext;
+
+        GameStateProvider.history.Add(current);
+
+        string winner = GameService.calculateWinner(current);
+
+        if (!string.IsNullOrEmpty(winner))
+        {
+            status = "Winner: " + winner;
+        }
+        else
+        {
+            setStatusMessage();
+        }
+
+        GameStateProvider.notifyChanges();
+    }
+
+    private void setStatusMessage()
+    {
+        status = "Next player:" + (GameStateProvider.xIsNext ? "X" : "O");
+    }
+
+}
