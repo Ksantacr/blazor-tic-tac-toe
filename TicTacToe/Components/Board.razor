@@ -43,6 +43,11 @@
 
     void handleClick(int i)
     {
+        if (!string.IsNullOrEmpty(GameService.calculateWinner(GameStateProvider.squares)))
+        {
+            return;
+        }
+
         GameStateProvider.squares[i] = GameStateProvider.xIsNext ? "X" : "O";
         GameStateProvider.xIsNext = !GameStateProvider.xIsNext;
 
