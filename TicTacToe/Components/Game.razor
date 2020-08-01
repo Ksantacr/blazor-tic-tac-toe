@@ -2,6 +2,7 @@
 
 @inject GameState GameStateProvider
 @inject GameService GameService
+@inject IJSRuntime IJSRuntime
 
 <div class="game">
     <div class="game-board">
@@ -11,7 +12,19 @@
         <div class="status">
             @status
         </div>
-        @*<ol>TODO</ol>*@
+        <ol>
+            @{
+                for (int i = 0; i < GameStateProvider.history.Count; i++)
+                {
+                    int index = i;
+                    <li>
+                        <button @onclick=@(() => jumpTo(index))>
+                            Go to move # @index
+                        </button>
+                    </li>
+                }
+            }
+        </ol>
     </div>
 </div>
 
@@ -21,13 +34,31 @@
     {
         setStatusMessage();
     }
-    void handleClick(int i)
+    async Task handleClick(int i)
     {
-        var current = GameStateProvider.history[GameStateProvider.history.Count() - 1];
+        // https://stackoverflow.com/questions/1215198/c-sharp-copy-array-by-value
+        var current = (string[])GameStateProvider.history[GameStateProvider.history.Count() - 1].Clone();
+
+
+        //await IJSRuntime.InvokeVoidAsync(
+        //    "showObject",
+        //    current.ToList()
+        //    );
+
         current[i] = GameStateProvider.xIsNext ? "X" : "O";
         GameStateProvider.xIsNext = !GameStateProvider.xIsNext;
 
         GameStateProvider.history.Add(current);
+
+        //var current2 = GameStateProvider.history[GameStateProvider.history.Count() - 1];
+
+        foreach (var item in GameStateProvider.history)
+        {
+            await IJSRuntime.InvokeVoidAsync(
+            "showObject",
+            item.ToList()
+            );
+        }
 
         string winner = GameService.calculateWinner(current);
 
@@ -41,6 +72,12 @@
         }
 
         GameStateProvider.notifyChanges();
+    }
+
+    void jumpTo(int i)
+    {
+        // slice
+        GameStateProvider.history = GameStateProvider.history.GetRange(0, i + 1);
     }
 
     private void setStatusMessage()
