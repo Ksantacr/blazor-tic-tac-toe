@@ -10,9 +10,6 @@ Changelog
 - [x] Logic game
 - [x] Main components added (Game, Board and Square)
 - [x] State management
-
-TODO
-
-- [ ] Block UI when player win
-- [ ] Reset button
-- [ ] Undo movement
+- [x] Block UI when player win
+- [x] Reset game
+- [x] Undo movement
