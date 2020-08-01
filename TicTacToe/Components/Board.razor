@@ -32,17 +32,17 @@
 
 @code {
 
-        [Parameter] public EventCallback<int> handleBoardClick { get; set; }
-        protected override void OnInitialized()
-        {
-            GameStateProvider.OnChange += StateHasChanged;
-        }
+    [Parameter] public EventCallback<int> handleBoardClick { get; set; }
+    protected override void OnInitialized()
+    {
+        GameStateProvider.OnChange += StateHasChanged;
+    }
 
-        async Task handleClick(int i)
-        {
-            var current = GameStateProvider.history[GameStateProvider.history.Count() - 1];
+    async Task handleClick(int i)
+    {
+        var current = GameStateProvider.history[GameStateProvider.history.Count() - 1];
 
-            if (!string.IsNullOrEmpty(GameService.calculateWinner(current)) || !string.IsNullOrEmpty(current[i]))
+        if (!string.IsNullOrEmpty(GameService.calculateWinner(current)) || !string.IsNullOrEmpty(current[i]))
         {
             return;
         }

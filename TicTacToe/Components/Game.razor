@@ -1,4 +1,4 @@
-﻿@page "/game"
+﻿@page "/"
 
 @inject GameState GameStateProvider
 @inject GameService GameService
@@ -19,7 +19,15 @@
                     int index = i;
                     <li>
                         <button @onclick=@(() => jumpTo(index))>
-                            Go to move # @index
+                            @if (index == 0)
+                            {
+                                @:Go to game start
+
+                            }
+                            else
+                            {
+                                @:Go to move # @index
+                            }
                         </button>
                     </li>
                 }
@@ -39,26 +47,18 @@
         // https://stackoverflow.com/questions/1215198/c-sharp-copy-array-by-value
         var current = (string[])GameStateProvider.history[GameStateProvider.history.Count() - 1].Clone();
 
-
-        //await IJSRuntime.InvokeVoidAsync(
-        //    "showObject",
-        //    current.ToList()
-        //    );
-
         current[i] = GameStateProvider.xIsNext ? "X" : "O";
         GameStateProvider.xIsNext = !GameStateProvider.xIsNext;
 
         GameStateProvider.history.Add(current);
 
-        //var current2 = GameStateProvider.history[GameStateProvider.history.Count() - 1];
-
-        foreach (var item in GameStateProvider.history)
-        {
-            await IJSRuntime.InvokeVoidAsync(
-            "showObject",
-            item.ToList()
-            );
-        }
+        //foreach (var item in GameStateProvider.history)
+        //{
+        //    await IJSRuntime.InvokeVoidAsync(
+        //    "showObject",
+        //    item.ToList()
+        //    );
+        //}
 
         string winner = GameService.calculateWinner(current);
 
@@ -76,7 +76,6 @@
 
     void jumpTo(int i)
     {
-        // slice
         GameStateProvider.history = GameStateProvider.history.GetRange(0, i + 1);
     }
 
@@ -84,5 +83,4 @@
     {
         status = "Next player:" + (GameStateProvider.xIsNext ? "X" : "O");
     }
-
 }
